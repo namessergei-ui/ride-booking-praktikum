@@ -14,11 +14,9 @@ class TripResource extends JsonResource
     {
         $driver = $this->driverProfile;
         $vehicle = $driver->vehicle;
-        $cities = config('cities');
         $route = $this->stops->map(fn (TripStop $stop): array => [
             'position' => $stop->position,
-            'id' => $stop->city,
-            ...$cities[$stop->city],
+            ...$stop->location->only('id', 'name', 'lat', 'lon'),
         ])->all();
 
         return [

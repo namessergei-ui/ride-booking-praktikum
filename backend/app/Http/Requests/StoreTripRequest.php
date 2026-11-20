@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\City;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -10,7 +11,7 @@ class StoreTripRequest extends FormRequest
 {
     public function rules(): array
     {
-        $city = ['bail', 'required', 'string', Rule::in(array_keys(config('cities')))];
+        $city = ['bail', 'required', 'string', 'max:50', 'alpha_dash:ascii', Rule::exists(City::class, 'id')];
 
         return [
             'from' => $city,
