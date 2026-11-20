@@ -109,7 +109,7 @@ class TripController extends Controller
     private function relations(): array
     {
         return [
-            'stops',
+            'stops.location',
             'driverProfile' => fn (BelongsTo $driver) => $driver->withAvg('ratings', 'score'),
             'driverProfile.user:id,name',
             'driverProfile.vehicle',

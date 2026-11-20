@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\City;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -12,10 +13,10 @@ class CityController extends Controller
         $data = $request->validate(['q' => ['nullable', 'string', 'max:80']]);
         $query = mb_strtolower($data['q'] ?? '');
 
-        $cities = collect(config('cities'))
-            ->filter(fn (array $city, string $id): bool => $query === ''
-                || str_contains(mb_strtolower($city['name']), $query) || str_contains($id, $query))
-            ->map(fn (array $city, string $id): array => ['id' => $id, ...$city]);
+        $cities = City::orderBy('id')->get()
+            ->filter(fn (City $city): bool => str_contains(mb_strtolower($city->name), $query)
+                || str_contains($city->id, $query))
+            ->map(fn (City $city): array => $city->only('id', 'name', 'lat', 'lon'));
 
         return response()->json(['data' => $cities->values()]);
     }
