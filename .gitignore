@@ -1,0 +1,8 @@
+.DS_Store
+/backend/.agents/
+/backend/.claude/
+/backend/.codex/
+/backend/.mcp.json
+/backend/AGENTS.md
+/backend/CLAUDE.md
+/backend/boost.json
