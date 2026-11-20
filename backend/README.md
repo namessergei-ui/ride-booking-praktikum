@@ -67,6 +67,7 @@ php artisan db:seed --class=DemoRideSeeder
 | --- | --- |
 | `POST /auth/register` | Регистрация. Поля `name`, `email`, `password`. |
 | `POST /auth/login` | Вход. Поля `email`, `password`. |
+| `GET /me/trips` | Поездки текущего водителя, включая завершённые. |
 | `GET /me`, `PATCH /me` | Просмотр своего профиля и обновление `name`. |
 | `PUT /me/driver` | Профиль водителя. Поля `experience_years` и `vehicle` с данными `make`, `model`, `color`, `passenger_seats`. |
 | `GET /cities?q=...` | Поиск города по имени или идентификатору. Без `q` возвращает справочник. |
@@ -74,7 +75,7 @@ php artisan db:seed --class=DemoRideSeeder
 | `GET /trips` | Поиск. Фильтры `from`, `to`, `date`, `timezone`, `max_price_kopecks`, `seats`, `luggage_allowed` (0/1), `min_rating`, `page`. |
 | `GET /trips/{trip}` | Маршрут в порядке следования с координатами, водитель, цена и свободные места. |
 | `POST /trips/{trip}/bookings` | Запрос брони. Поле `seats`. |
-| `GET /bookings` | Свои брони. |
+| `GET /bookings` | Свои брони. Необязательный фильтр `trip_id`. |
 | `GET /trips/{trip}/bookings` | Брони поездки для её водителя. |
 | `GET /trips/{trip}/bookings/{booking}` | Бронь и история для пассажира этой брони и водителя поездки. |
 | `POST /trips/{trip}/bookings/{booking}/confirm` | Подтвердить запрос. Доступно водителю поездки. |

@@ -17,9 +17,14 @@ class BookingController extends Controller
 
     public function mine(Request $request): AnonymousResourceCollection
     {
-        return BookingResource::collection(
-            Booking::where('passenger_id', $request->user()->id)->latest('id')->paginate(20)
-        );
+        $filters = $request->validate(['trip_id' => ['sometimes', 'required', 'integer', 'min:1']]);
+        $bookings = Booking::with('trip.stops.location')->where('passenger_id', $request->user()->id);
+
+        if (isset($filters['trip_id'])) {
+            $bookings->where('trip_id', $filters['trip_id']);
+        }
+
+        return BookingResource::collection($bookings->latest('id')->paginate(20)->withQueryString());
     }
 
     public function index(Request $request, Trip $trip): AnonymousResourceCollection

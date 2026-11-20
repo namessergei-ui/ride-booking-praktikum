@@ -17,6 +17,11 @@ class Booking extends Model
         return ['status' => BookingStatus::class];
     }
 
+    public function trip(): BelongsTo
+    {
+        return $this->belongsTo(Trip::class);
+    }
+
     public function passenger(): BelongsTo
     {
         return $this->belongsTo(User::class, 'passenger_id');

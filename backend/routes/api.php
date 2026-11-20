@@ -23,6 +23,7 @@ Route::prefix('v1')->scopeBindings()->group(function (): void {
 
     Route::middleware('auth:sanctum')->group(function (): void {
         Route::post('auth/logout', [AuthController::class, 'logout']);
+        Route::get('me/trips', [TripController::class, 'mine']);
         Route::get('me', [ProfileController::class, 'show']);
         Route::patch('me', [ProfileController::class, 'update']);
         Route::put('me/driver', [ProfileController::class, 'saveDriver']);

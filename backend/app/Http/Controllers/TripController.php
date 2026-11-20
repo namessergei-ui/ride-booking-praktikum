@@ -53,6 +53,17 @@ class TripController extends Controller
         return TripResource::collection($query->orderBy('departure_at')->orderBy('id')->paginate(20)->withQueryString());
     }
 
+    public function mine(Request $request): AnonymousResourceCollection
+    {
+        $trips = Trip::with($this->relations())
+            ->whereRelation('driverProfile', 'user_id', $request->user()->id)
+            ->latest('departure_at')
+            ->latest('id')
+            ->paginate(20);
+
+        return TripResource::collection($trips);
+    }
+
     public function show(Trip $trip): TripResource
     {
         return new TripResource($trip->load($this->relations()));

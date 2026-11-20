@@ -169,6 +169,30 @@ class RideBookingApiTest extends TestCase
         $this->getJson($base)->assertOk()->assertJsonPath('data.available_seats', 1);
     }
 
+    public function test_personal_trips_and_booking_filter_are_scoped_to_the_signed_in_user(): void
+    {
+        $driver = User::factory()->create();
+        $trip = $this->publishTrip($driver);
+        $otherTrip = $this->publishTrip(User::factory()->create());
+
+        $this->getJson('/api/v1/me/trips')->assertOk()->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $otherTrip['id']);
+
+        Sanctum::actingAs($driver);
+        $this->getJson('/api/v1/me/trips')->assertOk()->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $trip['id']);
+
+        Sanctum::actingAs(User::factory()->create());
+        $this->getJson('/api/v1/me/trips')->assertOk()->assertJsonCount(0, 'data');
+        $this->postJson('/api/v1/trips/'.$trip['id'].'/bookings', ['seats' => 1])->assertCreated();
+        $this->getJson('/api/v1/bookings?trip_id='.$trip['id'])->assertOk()->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.trip.route.1.id', 'rezh');
+        $this->getJson('/api/v1/bookings?trip_id='.$otherTrip['id'])->assertOk()->assertJsonCount(0, 'data');
+
+        Sanctum::actingAs($driver);
+        $this->getJson('/api/v1/bookings?trip_id='.$trip['id'])->assertOk()->assertJsonCount(0, 'data');
+    }
+
     private function publishTrip(User $driver, array $overrides = []): array
     {
         Sanctum::actingAs($driver);
